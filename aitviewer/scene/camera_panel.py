@@ -11,8 +11,8 @@ from typing import List, Optional, Sequence, Tuple
 import imgui
 import numpy as np
 from numpy.typing import NDArray
-from scipy.spatial import cKDTree
 from scipy.interpolate import make_interp_spline
+from scipy.spatial import cKDTree
 
 from aitviewer.renderables.point_clouds import PointClouds
 from aitviewer.renderables.spheres import Spheres
@@ -234,7 +234,6 @@ class CameraTrajectoryPanel:
         self._status_duration = 3.0
 
         self.trajectory_save_path = os.path.join(self.pose_dir, "trajectory.npz")
-
 
     # ------------------------------------------------------------------ #
     # Helpers
@@ -502,7 +501,9 @@ class CameraTrajectoryPanel:
         steps = [max(1, int(s)) for s in self.segment_steps[:num_segments]]
         return steps
 
-    def _interpolate_positions(self, key_positions: NDArray[np.float64], segment_steps: Sequence[int]) -> NDArray[np.float32]:
+    def _interpolate_positions(
+        self, key_positions: NDArray[np.float64], segment_steps: Sequence[int]
+    ) -> NDArray[np.float32]:
         total_frames = 1 + sum(segment_steps)
         if total_frames <= 1:
             return np.asarray(key_positions[:1], dtype=np.float32)
@@ -617,7 +618,6 @@ class CameraTrajectoryPanel:
             self._pivot_indicator.redraw()
         except Exception:
             pass
-
 
     def _ray_pointcloud_hit(
         self,
@@ -999,7 +999,9 @@ class CameraTrajectoryPanel:
             if key == self.position_interp_mode:
                 current_pos_idx = idx
                 break
-        changed_pos_interp, new_pos_idx = imgui.combo("Position interpolation", current_pos_idx, [label for _, label in pos_modes])
+        changed_pos_interp, new_pos_idx = imgui.combo(
+            "Position interpolation", current_pos_idx, [label for _, label in pos_modes]
+        )
         if changed_pos_interp:
             self.position_interp_mode = pos_modes[new_pos_idx][0]
         interp_modes = ["SLERP", "SQUAD"]
@@ -1035,9 +1037,7 @@ class CameraTrajectoryPanel:
         _, self.video_name = imgui.input_text("Video name", self.video_name, 128)
         _, self.video_fps = imgui.input_float("Video FPS", self.video_fps)
         self.video_fps = max(1.0, self.video_fps)
-        imgui.text(
-            "Recording mode: " + ("Playing animation" if self.record_scene_animation else "Static frame")
-        )
+        imgui.text("Recording mode: " + ("Playing animation" if self.record_scene_animation else "Static frame"))
         if imgui.button("Toggle recording mode"):
             self.record_scene_animation = not self.record_scene_animation
         if imgui.button("Record trajectory video"):
